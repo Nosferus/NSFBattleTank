@@ -21,6 +21,9 @@ private:
 	float CrosshairYLocation = 0.3f;
 	//FVector2D ScreenLocation;
 
+	UPROPERTY(EditAnywhere)
+	float LineTraceRange = 1000000.0f;
+
 	ATank* GetControlledTank() const;
 	
 	virtual void BeginPlay() override;
@@ -31,5 +34,7 @@ private:
 	//Return an out parameter, true if hit lanscape
 	bool GetSightRayHitLocation(FVector& HitLocation) const;
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
+
+	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
 
 };
