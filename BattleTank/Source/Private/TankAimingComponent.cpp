@@ -37,9 +37,24 @@ void UTankAimingComponent::TickComponent( float DeltaTime, ELevelTick TickType, 
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation)
+void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-	auto OurTankName = GetOwner()->GetName();
-	auto BarrelLocation = Barrel->GetComponentLocation();
-	UE_LOG(LogTemp, Warning, TEXT("%s целится в %s из %s"), *OurTankName, *HitLocation.ToString(), *BarrelLocation.ToString());
+	if (!Barrel)
+		return;
+
+	FVector OutLaunchVelocity;
+	FVector StartLocation = Barrel->GetSocketLocation((FName("Projectile")));
+	// Рассчитываем вектор запуска
+	if (UGameplayStatics::SuggestProjectileVelocity(this, OutLaunchVelocity, StartLocation, HitLocation, LaunchSpeed, false, 
+													0.0f, 0.0f, ESuggestProjVelocityTraceOption::DoNotTrace))
+	{
+	
+		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		//auto OurTankName = GetOwner()->GetName();
+		//auto BarrelLocation = Barrel->GetComponentLocation();
+		//UE_LOG(LogTemp, Warning, TEXT("%s целится в %s из %s"), *OurTankName, *HitLocation.ToString(), *BarrelLocation.ToString());
+		auto TankName = GetOwner()->GetName();// .ToString();
+		UE_LOG(LogTemp, Warning, TEXT("%s : прицеливание в %s"), *TankName, *AimDirection.ToString());
+	}
+	// Если траектория не вычислена, ничего не делаем
 }
