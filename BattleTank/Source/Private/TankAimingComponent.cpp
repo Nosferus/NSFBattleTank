@@ -2,7 +2,6 @@
 
 #include "BattleTank.h"
 #include "TankAimingComponent.h"
-
 #include "TankBarrel.h"
 
 // Sets default values for this component's properties
@@ -21,51 +20,40 @@ void UTankAimingComponent::SetBarrelReference(UTankBarrel *BarrelToSet)
 	Barrel = BarrelToSet;
 }
 
-// Called when the game starts
-void UTankAimingComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UTankAimingComponent::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
-{
-	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-
-	// ...
-}
-
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
 	if (!Barrel)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("WARNING_-_--_--___-__---"));
 		return;
 	}
 
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation((FName("Projectile")));
-	bool bHaveAimSolution = (UGameplayStatics::SuggestProjectileVelocity(this, OutLaunchVelocity, StartLocation, HitLocation, LaunchSpeed, false,
-		0.0f, 0.0f, ESuggestProjVelocityTraceOption::DoNotTrace));
+	bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity(this, OutLaunchVelocity, StartLocation, HitLocation, LaunchSpeed,
+		0.0f, 0.0f, ESuggestProjVelocityTraceOption::DoNotTrace);
 	// –ассчитываем вектор запуска
 	if (bHaveAimSolution)
 	{
-	
+
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		//auto OurTankName = GetOwner()->GetName();
 		//auto BarrelLocation = Barrel->GetComponentLocation();
-		//UE_LOG(LogTemp, Warning, TEXT("%s целитс€ в %s из %s"), *OurTankName, *HitLocation.ToString(), *BarrelLocation.ToString());
+	//	UE_LOG(LogTemp, Warning, TEXT("%s целитс€ в %s из %s"), *OurTankName, *HitLocation.ToString(), *BarrelLocation.ToString());
 	//	auto TankName = GetOwner()->GetName();// .ToString();
 	//	UE_LOG(LogTemp, Warning, TEXT("%s : прицеливание в %s"), *TankName, *AimDirection.ToString());
 
 		MoveBarrelTowardsAim(AimDirection);
 
+		auto Time = GetWorld()->GetTimeSeconds();
+		UE_LOG(LogTemp, Warning, TEXT("%f:–ешение дл€ цели найдено"), Time);
+
 	}
-	// ≈сли траектори€ не вычислена, ничего не делаем
+	else			// ≈сли траектори€ не вычислена, ничего не делаем пока
+	{
+		auto Time = GetWorld()->GetTimeSeconds();
+		UE_LOG(LogTemp, Warning, TEXT("%f:Ќе найдено решение дл€ цели"), Time);
+	}
+	
 }
 
 void UTankAimingComponent::MoveBarrelTowardsAim(FVector AimDirection)
@@ -75,5 +63,7 @@ void UTankAimingComponent::MoveBarrelTowardsAim(FVector AimDirection)
 	auto AimAsRotator = AimDirection.Rotation();
 
 	auto DeltaRotator = AimAsRotator - BarrelRotation;
-	UE_LOG(LogTemp, Warning, TEXT("AimAsRotator прицеливание в %s"), *AimAsRotator.ToString());
+	//UE_LOG(LogTemp, Warning, TEXT("AimAsRotator прицеливание в %s"), *AimAsRotator.ToString());
+
+	Barrel->Elevate(5);
 }
