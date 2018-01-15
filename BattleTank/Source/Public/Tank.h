@@ -49,4 +49,7 @@ private:
 
 	//местная ссылка для спауна Projectile
 	UTankBarrel* Barrel = nullptr;
+
+	float ReloadTime = 3.0f;
+	double LastFireTime = 0.0f;
 };
