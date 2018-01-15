@@ -9,6 +9,7 @@
 class UTankBarrel;
 class UTankTurret;
 class UTankAimingComponent;
+class AProjectile;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -16,13 +17,15 @@ class BATTLETANK_API ATank : public APawn
 	GENERATED_BODY()
 
 public:
-	void AimAt(FVector HitLocation);
-
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	//void SetBarrelReference(UStaticMeshComponent *BarrelToSet);
 	void SetBarrelReference(UTankBarrel *BarrelToSet);
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetTurretReference(UTankTurret *TurretToSet);
+
+	void AimAt(FVector HitLocation);
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void Fire();
 
 protected:
 	UTankAimingComponent* TankAimingComponent = nullptr;
@@ -39,4 +42,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = firing)
 	float LaunchSpeed = 100000; //1000 м/с
+
+	UPROPERTY(EditAnywhere, category = Setup)
+	TSubclassOf<AProjectile> ProjectileBlueprint;
+	//UClass* ProjectileBlueprint;
+
+	//местная ссылка для спауна Projectile
+	UTankBarrel* Barrel = nullptr;
 };

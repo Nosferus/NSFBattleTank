@@ -56,14 +56,14 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 
 		MoveBarrelTowardsAim(AimDirection);
 
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f:Решение для цели найдено"), Time);
+//		auto Time = GetWorld()->GetTimeSeconds();
+//		UE_LOG(LogTemp, Warning, TEXT("%f:Решение для цели найдено"), Time);
 
 	}
 	else			// Если траектория не вычислена, ничего не делаем пока
 	{
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f:Не найдено решение для цели"), Time);
+//		auto Time = GetWorld()->GetTimeSeconds();
+//		UE_LOG(LogTemp, Warning, TEXT("%f:Не найдено решение для цели"), Time);
 	}
 	
 }
