@@ -56,9 +56,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 
 		MoveBarrelTowardsAim(AimDirection);
 
-//		auto Time = GetWorld()->GetTimeSeconds();
-//		UE_LOG(LogTemp, Warning, TEXT("%f:–ешение дл€ цели найдено"), Time);
-
 	}
 	else			// ≈сли траектори€ не вычислена, ничего не делаем пока
 	{

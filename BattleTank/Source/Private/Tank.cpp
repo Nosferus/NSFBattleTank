@@ -56,6 +56,7 @@ void ATank::Fire()
 
 	if (Barrel && IsReloaded)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Огоооонь!"));
 		//создаём projectile в сокете для стрельбы
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketLocation(FName("Projectile")),
 			Barrel->GetSocketRotation(FName("Projectile")));
