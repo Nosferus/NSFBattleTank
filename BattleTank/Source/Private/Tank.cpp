@@ -15,40 +15,24 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	// Нет необходимости защищать указатели, т.к. они добавляются при создании
-	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
+//	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
 //	TankMovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
 
-}
-
-//void ATank::SetBarrelReference(UStaticMeshComponent *BarrelToSet)
-void ATank::SetBarrelReference(UTankBarrel *BarrelToSet)
-{
-	TankAimingComponent->SetBarrelReference(BarrelToSet);
-	Barrel = BarrelToSet;
-}
-
-void ATank::SetTurretReference(UTankTurret *TurretToSet)
-{
-	TankAimingComponent->SetTurretReference(TurretToSet);
+	auto TankName = GetName();
+	UE_LOG(LogTemp, Warning, TEXT("NSF C++: Танк %s создан"), *TankName);
 }
 
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
 {
-	Super::BeginPlay();
-	
-}
-
-
-// Called to bind functionality to input
-void ATank::SetupPlayerInputComponent(class UInputComponent* InputComponent)
-{
-	Super::SetupPlayerInputComponent(InputComponent);
-
+	Super::BeginPlay(); //Необходимо для того, чтобы активировать BeginPlay в BP
+	auto TankName = GetName();
+	UE_LOG(LogTemp, Warning, TEXT("NSF C++: Танк %s начал игру"), *TankName);
 }
 
 void ATank::AimAt(FVector HitLocation)
 {
+	if (!TankAimingComponent) return;
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 }
 
@@ -58,7 +42,6 @@ void ATank::Fire()
 
 	if (Barrel && IsReloaded)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Огоооонь!"));
 		//создаём projectile в сокете для стрельбы
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketLocation(FName("Projectile")),
 			Barrel->GetSocketRotation(FName("Projectile")));
