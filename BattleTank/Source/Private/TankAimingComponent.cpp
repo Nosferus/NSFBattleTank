@@ -3,6 +3,7 @@
 #include "BattleTank.h"
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
+#include "Projectile.h"
 #include "TankTurret.h"
 
 // Sets default values for this component's properties
@@ -57,11 +58,10 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 //		auto TankName = GetOwner()->GetName();
 //		UE_LOG(LogTemp, Warning, TEXT("%s : прицеливание в %s"), *TankName, *AimDirection.ToString());
 
-
 		MoveBarrelTowardsAim(AimDirection);
 
 	}
-	else			// Если траектория не вычислена, ничего не делаем пока
+	else		// Если траектория не вычислена, ничего не делаем пока
 	{
 //		auto Time = GetWorld()->GetTimeSeconds();
 //		UE_LOG(LogTemp, Warning, TEXT("%f:Не найдено решение для цели"), Time);
@@ -84,4 +84,24 @@ void UTankAimingComponent::MoveBarrelTowardsAim(FVector AimDirection)
 
 	Barrel->Elevate(DeltaRotator.Pitch);
 	Turret->Rotate(DeltaRotator.Yaw);
+}
+
+void UTankAimingComponent::Fire()
+{
+	if (!ensure(Barrel && ProjectileBlueprint))
+		return;
+	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTime;
+
+	if (IsReloaded)
+	{
+		//создаём projectile в сокете для стрельбы
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketLocation(FName("Projectile")),
+			Barrel->GetSocketRotation(FName("Projectile")));
+
+		if (!ensure(Projectile))
+			return;
+		///UE_LOG(LogTemp, Warning, TEXT("Ку-ку"));
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }

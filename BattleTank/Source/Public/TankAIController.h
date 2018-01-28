@@ -7,7 +7,6 @@
 
 //Forward Declarations
 class UTankAimingComponent;
-///class ATank;
 
 /**
  * 
