@@ -3,7 +3,7 @@
 #include "BattleTank.h"
 #include "TankBarrel.h"
 #include "Projectile.h"
-#include "TankAimingComponent.h"
+///#include "TankAimingComponent.h"
 #include "Tank.h"
 
 
@@ -17,30 +17,30 @@ ATank::ATank()
 //	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
 //	TankMovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
 
-	auto TankName = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("NSF C++: Танк %s создан"), *TankName);
 }
 
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
 {
 	Super::BeginPlay(); //Необходимо для того, чтобы активировать BeginPlay в BP
-	auto TankName = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("NSF C++: Танк %s начал игру"), *TankName);
-}
+	//auto TankName = GetName();
+	//UE_LOG(LogTemp, Warning, TEXT("NSF C++: Танк %s начал игру"), *TankName);
 
+///	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
+}
+/*
 void ATank::AimAt(FVector HitLocation)
 {
 	if (!ensure(TankAimingComponent)) return;
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 }
-
+*/
 void ATank::Fire()
 {
 	if (!ensure(Barrel))
 		return;
 	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTime;
-	
+	//UE_LOG(LogTemp, Warning, TEXT("Ку-ку"));
 	if (IsReloaded)
 	{
 		//создаём projectile в сокете для стрельбы
