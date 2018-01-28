@@ -4,7 +4,6 @@
 #include "TankBarrel.h"
 #include "Projectile.h"
 #include "TankAimingComponent.h"
-#include "TankMovementComponent.h"
 #include "Tank.h"
 
 
@@ -32,15 +31,17 @@ void ATank::BeginPlay()
 
 void ATank::AimAt(FVector HitLocation)
 {
-	if (!TankAimingComponent) return;
+	if (!ensure(TankAimingComponent)) return;
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 }
 
 void ATank::Fire()
 {
+	if (!ensure(Barrel))
+		return;
 	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTime;
-
-	if (Barrel && IsReloaded)
+	
+	if (IsReloaded)
 	{
 		//создаём projectile в сокете для стрельбы
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketLocation(FName("Projectile")),
