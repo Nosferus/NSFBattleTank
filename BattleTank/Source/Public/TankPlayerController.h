@@ -41,4 +41,5 @@ private:
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
 
+	UTankAimingComponent* AimingComponent;
 };

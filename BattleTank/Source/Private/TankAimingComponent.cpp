@@ -7,14 +7,14 @@
 #include "TankTurret.h"
 
 // Sets default values for this component's properties
-/*UTankAimingComponent::UTankAimingComponent()
+UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
-}*/
+}
 
 void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
 {
@@ -22,21 +22,27 @@ void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	Turret = TurretToSet;
 }
 
-//void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent *BarrelToSet)
-void UTankAimingComponent::SetBarrelReference(UTankBarrel *BarrelToSet)
+void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
-	if (!ensure(BarrelToSet))
-		return;
-	Barrel = BarrelToSet;
+	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	//UE_LOG(LogTemp, Warning, TEXT("Тикаю . . . . . "));
+
+	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTime)
+		FiringState = EFiringState::Reloading;
+	else if (IsBarrelMoving())
+		FiringState = EFiringState::Aiming;
+	else
+		FiringState = EFiringState::Locked;
 }
 
-void UTankAimingComponent::SetTurretReference(UTankTurret *TurretToSet)
+bool UTankAimingComponent::IsBarrelMoving()
 {
-	if (!ensure(TurretToSet))
-		return;
-	Turret = TurretToSet;
-}
+	if (!ensure(Barrel))
+		return false;
 
+	FVector BarrelForward = Barrel->GetForwardVector();
+	return (!AimDirection.Equals(BarrelForward, 0.1f));
+}
 
 void UTankAimingComponent::AimAt(FVector HitLocation)
 {
@@ -51,14 +57,14 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	// Рассчитываем вектор запуска
 	if (bHaveAimSolution)
 	{
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection = OutLaunchVelocity.GetSafeNormal();
 		//auto OurTankName = GetOwner()->GetName();
 		//auto BarrelLocation = Barrel->GetComponentLocation();
 	//	UE_LOG(LogTemp, Warning, TEXT("%s целится в %s из %s"), *OurTankName, *HitLocation.ToString(), *BarrelLocation.ToString());
 //		auto TankName = GetOwner()->GetName();
 //		UE_LOG(LogTemp, Warning, TEXT("%s : прицеливание в %s"), *TankName, *AimDirection.ToString());
 
-		MoveBarrelTowardsAim(AimDirection);
+		MoveBarrelTowardsAim();
 
 	}
 	else		// Если траектория не вычислена, ничего не делаем пока
@@ -69,7 +75,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	
 }
 
-void UTankAimingComponent::MoveBarrelTowardsAim(FVector AimDirection)
+void UTankAimingComponent::MoveBarrelTowardsAim()
 {
 	if (!ensure(Barrel && Turret))
 	{
@@ -90,9 +96,8 @@ void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel && ProjectileBlueprint))
 		return;
-	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTime;
 
-	if (IsReloaded)
+	if (!(FiringState == EFiringState::Reloading))
 	{
 		//создаём projectile в сокете для стрельбы
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketLocation(FName("Projectile")),
