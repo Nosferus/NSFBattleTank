@@ -3,7 +3,34 @@
 #include "BattleTank.h"
 #include "TankTrack.h"
 
+UTankTrack::UTankTrack()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+}
 
+void UTankTrack::BeginPlay()
+{
+	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
+}
+
+void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Шмяк . . . . . "));
+}
+
+void UTankTrack::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
+{
+	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	//UE_LOG(LogTemp, Warning, TEXT("Трак. Тикаю . . . . . "));
+
+	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
+	auto CorrAcceleration = -SlippageSpeed / DeltaTime * GetRightVector();
+
+	auto TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
+	auto CorrectionForce = (TankRoot->GetMass() * CorrAcceleration) / 2;
+
+	TankRoot->AddForce(CorrectionForce);
+}
 
 void UTankTrack::SetThrottle(float Throttle)
 {
