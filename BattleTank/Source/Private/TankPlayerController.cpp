@@ -29,7 +29,8 @@ void ATankPlayerController::AimTowardsCrosshair()
 		return;
 
 	FVector HitLocation; //Out param
-	if (GetSightRayHitLocation(HitLocation))
+	bool bGotHitLocation = GetSightRayHitLocation(HitLocation);
+	if (bGotHitLocation)
 	{
 		AimingComponent->AimAt(HitLocation);
 	}
@@ -46,9 +47,9 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	FVector LookDirection;
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
-		/*return */GetLookVectorHitLocation(LookDirection, HitLocation);
+		return GetLookVectorHitLocation(LookDirection, HitLocation);
 		//UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString())
-		return true;
+		//return true;
 	}
 	//Выполняем депроекцию положения курсора
 //	FVector WorldDirection, CamWorldLocation;

@@ -58,19 +58,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	if (bHaveAimSolution)
 	{
 		AimDirection = OutLaunchVelocity.GetSafeNormal();
-		//auto OurTankName = GetOwner()->GetName();
-		//auto BarrelLocation = Barrel->GetComponentLocation();
-	//	UE_LOG(LogTemp, Warning, TEXT("%s целится в %s из %s"), *OurTankName, *HitLocation.ToString(), *BarrelLocation.ToString());
-//		auto TankName = GetOwner()->GetName();
-//		UE_LOG(LogTemp, Warning, TEXT("%s : прицеливание в %s"), *TankName, *AimDirection.ToString());
-
 		MoveBarrelTowardsAim();
-
 	}
 	else		// Если траектория не вычислена, ничего не делаем пока
 	{
-//		auto Time = GetWorld()->GetTimeSeconds();
-//		UE_LOG(LogTemp, Warning, TEXT("%f:Не найдено решение для цели"), Time);
+
 	}
 	
 }
@@ -89,7 +81,10 @@ void UTankAimingComponent::MoveBarrelTowardsAim()
 	//UE_LOG(LogTemp, Warning, TEXT("AimAsRotator прицеливание в %s"), *AimAsRotator.ToString());
 
 	Barrel->Elevate(DeltaRotator.Pitch);
-	Turret->Rotate(DeltaRotator.Yaw);
+	if (FMath::Abs(DeltaRotator.Yaw) < 180.0f)
+		Turret->Rotate(DeltaRotator.Yaw);
+	else
+		Turret->Rotate(-DeltaRotator.Yaw);
 }
 
 void UTankAimingComponent::Fire()
