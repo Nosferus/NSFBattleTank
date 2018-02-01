@@ -16,12 +16,15 @@ class BATTLETANK_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
 	
+protected:
+	UPROPERTY(EditDefaultsOnly, category = "Setup")
+	float AcceptanceRadius = 8000.0f;
 	
 private:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-
-	float AcceptanceRadius = 3000.0f;
+	
+	UTankAimingComponent* AimingComponent;
 
 	//ATank* GetControlledTank() const;
 	//ATank* GetPlayerTank() const;

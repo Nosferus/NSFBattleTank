@@ -27,12 +27,16 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	//UE_LOG(LogTemp, Warning, TEXT("Тикаю . . . . . "));
 
-	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTime)
+	if (AmmoLeft == 0)
+		FiringState = EFiringState::OutOfAmmo;
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTime)
 		FiringState = EFiringState::Reloading;
 	else if (IsBarrelMoving())
 		FiringState = EFiringState::Aiming;
 	else
 		FiringState = EFiringState::Locked;
+
+
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
@@ -91,8 +95,8 @@ void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel && ProjectileBlueprint))
 		return;
-
-	if (!(FiringState == EFiringState::Reloading))
+	
+	if (FiringState == EFiringState::Locked || FiringState == EFiringState::Aiming)
 	{
 		//создаём projectile в сокете для стрельбы
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketLocation(FName("Projectile")),
@@ -103,5 +107,6 @@ void UTankAimingComponent::Fire()
 		///UE_LOG(LogTemp, Warning, TEXT("Ку-ку"));
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
+		AmmoLeft--;
 	}
 }
