@@ -68,7 +68,7 @@ private:
 
 	double LastFireTime = 0.0f;
 
-	int AmmoLeft = 2;
+	int AmmoLeft = 5;
 
 	FVector AimDirection;
 };
