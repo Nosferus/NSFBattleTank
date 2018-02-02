@@ -41,7 +41,7 @@ public:
 	EFiringState GetFiringState() const { return FiringState; }
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	int GetAmmoLeft() const { return AmmoLeft; }
+	int32 GetAmmoLeft() const { return AmmoLeft; }
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
@@ -68,7 +68,8 @@ private:
 
 	double LastFireTime = 0.0f;
 
-	int AmmoLeft = 5;
+	UPROPERTY(EditDefaultsOnly, category = "Setup")
+	int32 AmmoLeft = 5;
 
 	FVector AimDirection;
 };
