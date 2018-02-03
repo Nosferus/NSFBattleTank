@@ -45,6 +45,9 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAActor, 
 	SetRootComponent(ImpactBlast);
 	CollisionMesh->DestroyComponent();
 
+	UGameplayStatics::ApplyRadialDamage(this, ProjectileDamage, GetActorLocation(), ExplosionForce->Radius, UDamageType::StaticClass(), TArray<AActor*>() );
+	UE_LOG(LogTemp, Warning, TEXT("Нанесено %f урона"), ProjectileDamage);
+
 	FTimerHandle Timer;
 	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyDelay, false);
 }
