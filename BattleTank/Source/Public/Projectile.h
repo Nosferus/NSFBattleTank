@@ -18,15 +18,22 @@ public:
 	virtual void BeginPlay() override;
 	
 	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+	//virtual void Tick( float DeltaSeconds ) override;
 
 	void LaunchProjectile(float Speed);
 
 private:
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
+	
 	UPROPERTY(VisibleAnywhere, Category = "FX")
 	UStaticMeshComponent* CollisionMesh = nullptr;
+	
 	UPROPERTY(VisibleAnywhere, Category = "FX")
 	UParticleSystemComponent* LaunchBlast = nullptr;
-		
+	
+	UPROPERTY(VisibleAnywhere, Category = "FX")
+	UParticleSystemComponent* ImpactBlast = nullptr;
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };
