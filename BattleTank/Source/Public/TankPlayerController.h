@@ -21,6 +21,9 @@ protected:
 	void FoundAimingComponent(UTankAimingComponent* AimingComponentRef);
 
 private:
+	UFUNCTION()
+	void OnTankDeath();
+
 	UPROPERTY(EditAnywhere)
 	float CrosshairXLocation = 0.5f;
 	UPROPERTY(EditAnywhere)
@@ -31,6 +34,7 @@ private:
 	float LineTraceRange = 1000000.0f;
 	
 	virtual void BeginPlay() override;
+	virtual void SetPawn(APawn* InPawn) override;
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void AimTowardsCrosshair();

@@ -21,7 +21,13 @@ protected:
 	float AcceptanceRadius = 8000.0f;
 	
 private:
+
+	UFUNCTION()
+	void OnTankDeath();
+
 	virtual void BeginPlay() override;
+
+	virtual void SetPawn(APawn* InPawn) override;
 	virtual void Tick(float DeltaSeconds) override;
 	
 	UTankAimingComponent* AimingComponent;

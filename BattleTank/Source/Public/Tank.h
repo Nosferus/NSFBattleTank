@@ -5,6 +5,8 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"	//Должен быть в конце
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTankDelegate);
+
 //Forward Declarations
 
 
@@ -19,6 +21,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Info")
 	float GetHealthPercent() const { return ((float)CurrentHealth / (float)MaxHealth); }
 
+	//UFUNCTION()
+	FTankDelegate OnDeath;
+
 protected:
 
 private:
@@ -31,6 +36,6 @@ private:
 	int32 CurrentHealth;
 
 	// Called when the game starts or when spawned
-///	virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 };
